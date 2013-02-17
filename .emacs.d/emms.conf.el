@@ -1,0 +1,101 @@
+;(add-to-list 'load-path
+;                    "~/.emacs.d/emms/")       
+
+
+;配置EMMS
+(require 'emms-setup)
+(emms-standard)   
+(emms-default-players)  
+
+(require 'emms-player-mplayer)
+(add-to-list 'emms-player-list 'emms-player-mplayer)
+
+;; Show the current track each time EMMS
+;; starts to play a track with "NP : "
+(add-hook 'emms-player-started-hook 'emms-show)
+(setq emms-show-format "NP: %s")
+
+;; 调整音量
+;; no cli volume setup tools in windows
+(require 'emms-volume)
+;; 给音乐打分
+(require 'emms-score)
+(emms-score 1)
+;; 自动识别音乐标签的编码
+(require 'emms-i18n)
+;; 自动保存和导入上次的播放列表
+(require 'emms-history)
+;;; My musics
+(setq emms-source-file-default-directory "~/Music/")
+;; my customizable playlist format
+(defun bigclean-emms-info-track-description (track)
+  "Return a description of the current track."
+  (let ((artist (emms-track-get track 'info-artist))
+                (title (emms-track-get track 'info-title))
+                (album (emms-track-get track 'info-album))
+                (ptime (emms-track-get track 'info-playing-time)))
+        (if title
+          (format
+                "%-35s %-40s %-35s %5s:%-5s"
+                (if artist artist "")
+                (if title title "")
+                (if album album "")
+                (/ ptime 60)
+                (% ptime 60)))))
+(setq emms-track-description-function
+      'bigclean-emms-info-track-description) 
+;; format current track,only display title in mode line
+(defun bigclean-emms-mode-line-playlist-current ()
+  "Return a description of the current track."
+  (let* ((track (emms-playlist-current-selected-track))
+         (type (emms-track-type track))
+         (title (emms-track-get track 'info-title)))
+        (format "[ %s ]"
+            (cond ((and title)
+                   title)))))
+
+(setq emms-mode-line-mode-line-function
+      'bigclean-emms-mode-line-playlist-current)
+;; global key-map
+;; all global keys prefix is C-c e
+;; compatible with emms-playlist mode keybindings
+;; you can view emms-playlist-mode.el to get details about
+;; emms-playlist mode keys map
+(global-set-key (kbd "C-c e s") 'emms-stop)
+(global-set-key (kbd "C-c e P") 'emms-pause)
+(global-set-key (kbd "C-c e n") 'emms-next)
+(global-set-key (kbd "C-c e p") 'emms-previous)
+(global-set-key (kbd "C-c e f") 'emms-show)
+(global-set-key (kbd "C-c e >") 'emms-seek-forward)
+(global-set-key (kbd "C-c e <") 'emms-seek-backward)
+
+;; these keys maps were derivations of above keybindings
+(global-set-key (kbd "C-c e S") 'emms-start)
+(global-set-key (kbd "C-c e g") 'emms-playlist-mode-go)
+(global-set-key (kbd "C-c e t") 'emms-play-directory-tree)
+(global-set-key (kbd "C-c e h") 'emms-shuffle)
+(global-set-key (kbd "C-c e a") 'emms-add-file)
+(global-set-key (kbd "C-c e e") 'emms-play-file)
+(global-set-key (kbd "C-c e l") 'emms-play-playlist)
+(global-set-key (kbd "C-c e r") 'emms-toggle-repeat-track)
+(global-set-key (kbd "C-c e R") 'emms-toggle-repeat-playlist)
+(global-set-key (kbd "C-c e u") 'emms-score-up-playing)
+(global-set-key (kbd "C-c e d") 'emms-score-down-playing)
+(global-set-key (kbd "C-c e o") 'emms-score-show-playing)
+;; coding settings
+(setq emms-info-mp3info-coding-system 'gbk
+      emms-cache-file-coding-system 'utf-8
+      ;; emms-i18n-default-coding-system '(utf-8 . utf-8)
+      )
+;; playlist-mode-map
+(define-key emms-playlist-mode-map (kbd "SPC") 'emms-pause)
+(define-key emms-playlist-mode-map (kbd "+") 'emms-volume-raise)
+(define-key emms-playlist-mode-map (kbd "-") 'emms-volume-lower)
+(define-key emms-playlist-mode-map (kbd "<right>")
+  (lambda () (interactive) (emms-seek +10)))
+(define-key emms-playlist-mode-map (kbd "<left>")
+  (lambda () (interactive) (emms-seek -10)))
+;;(define-key emms-playlist-mode-map (kbd "<up>")
+;;  (lambda () (interactive) (emms-seek +60)))
+;;(define-key emms-playlist-mode-map (kbd "<down>")
+;; (lambda () (interactive) (emms-seek -60)))
