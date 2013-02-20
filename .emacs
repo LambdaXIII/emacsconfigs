@@ -15,6 +15,8 @@
 (setq frame-title-format "emacs@%b")
 (auto-image-file-mode)
 
+(setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
+    (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) 
  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t) 
@@ -23,12 +25,20 @@
 ;(require 'color-theme)
 ;(color-theme-initialize)
 ;(color-theme-high-contrast)
+;(color-theme-tangotango)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-s M-b") 'speedbar)
 
 
 ;(add-to-list 'load-path "/usr/share/emacs/site-lisp/emhacks")
+
+;(add-to-list 'load-path "/usr/share/emacs/site-lisp/auto-complete")
+;(require 'auto-complete-config)
+;(add-to-list 'ac-dictionary-directories "/usr/share/emacs/site-lisp/auto-complete/ac-dict")
+;(ac-config-default)
+
+
 (add-to-list 'load-path
                     "~/.emacs.d")       
 (load "auctex.conf.el")
@@ -37,6 +47,9 @@
 ;(load "tabbar.conf.el")
 (load "emms.conf.el")
 (load "pkgbuildmode.conf.el")
+(add-to-list 'load-path "~/.emacs.d/weibo.emacs")
+(require 'weibo)
+
 
 
 
