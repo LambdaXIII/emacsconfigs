@@ -19,3 +19,10 @@
              (imenu-add-menubar-index)
              (define-key LaTeX-mode-map (kbd "TAB") 'TeX-complete-symbol)
 ))
+
+(setq TeX-parse-self t)
+;在启动TeX主文件时，如果没有对应的.el文件，则分析自己包含的宏文件，然后在当前文件所在目录的auto子目录下建立当前文件名对应的.el文件供分析，自动补全之用！：〕
+(setq TeX-auto-save t)
+;主tex文件存盘时，分析主文件，保存相应auto下的.el文件！
+(setq TeX-electric-escape t)
+;输入``\''就会进入补全模式, 不过缺省的补全会自动加上{}光标停在中间,很方便的说，赞:) 
